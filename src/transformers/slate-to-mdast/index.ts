@@ -14,6 +14,7 @@ type TextOrDecoration =
   | mdast.Underline
   | mdast.Subscript
   | mdast.Superscript
+  | mdast.Color
   | mdast.InlineCode;
 
 export type OverridedSlateBuilders = { [key: string]: SlateBuilder };
@@ -82,7 +83,8 @@ const convertNodes = (
             'delete',
             'underline',
             'subscript',
-            'superscript'
+            'superscript',
+            'color'
           ] as const
         ).forEach((k) => {
           if (cur[k]) {
@@ -144,6 +146,7 @@ const convertNodes = (
               case 'underline':
               case 'subscript':
               case 'superscript':
+              case 'color':
                 res = {
                   type: k,
                   // @ts-expect-error: types not directly fitting

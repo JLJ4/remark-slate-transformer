@@ -10,6 +10,7 @@ export type Decoration = Readonly<{
     | mdast.Underline
     | mdast.Subscript
     | mdast.Superscript
+    | mdast.Color
     | mdast.InlineCode
   )['type']]?: true;
 }>;
@@ -108,12 +109,19 @@ export const buildSlateNode = (
     case 'delete':
     case 'underline':
     case 'subscript':
-    case 'superscript': {
+    case 'superscript':
+    case 'color': {
       const { type, children } = node;
       // @ts-expect-error: it is callable
       return children.reduce<SlateNode[]>(
         (acc: SlateNode[], n: mdast.Content) => {
-          acc.push(...buildSlateNode(n, { ...deco, [type]: true }, overrides));
+          acc.push(
+            ...buildSlateNode(
+              n,
+              { ...deco, [type]: type === 'color' ? node.color : true },
+              overrides
+            )
+          );
           return acc;
         },
         []

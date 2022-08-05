@@ -95,6 +95,11 @@ export interface Superscript extends Parent {
   type: 'superscript';
 }
 
+export interface Color extends Parent {
+  type: 'color';
+  color: string;
+}
+
 export type Content =
   | TopLevelContent
   | ListContent
@@ -138,6 +143,7 @@ export type StaticPhrasingContent =
   | Underline
   | Subscript
   | Superscript
+  | Color
   | HTML
   | InlineCode
   | Break
