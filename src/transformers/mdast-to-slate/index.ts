@@ -7,6 +7,9 @@ export type Decoration = Readonly<{
     | mdast.Emphasis
     | mdast.Strong
     | mdast.Delete
+    | mdast.Underline
+    | mdast.Subscript
+    | mdast.Superscript
     | mdast.InlineCode
   )['type']]?: true;
 }>;
@@ -53,7 +56,7 @@ const convertNodes = (
   }, []);
 };
 
-const buildSlateNode = (
+export const buildSlateNode = (
   node: mdast.Content,
   deco: Decoration,
   overrides: OverridedMdastBuilders
@@ -102,20 +105,19 @@ const buildSlateNode = (
       return [buildText(node.value, deco)];
     case 'emphasis':
     case 'strong':
-    case 'delete': {
+    case 'delete':
+    case 'underline':
+    case 'subscript':
+    case 'superscript': {
       const { type, children } = node;
-      // type-coverage:ignore-next-line
-      return children.reduce<SlateNode[]>((acc, n) => {
-        acc.push(
-          ...buildSlateNode(
-            // type-coverage:ignore-next-line
-            n as mdast.Content,
-            { ...deco, [type]: true },
-            overrides
-          )
-        );
-        return acc;
-      }, []);
+      // @ts-expect-error: it is callable
+      return children.reduce<SlateNode[]>(
+        (acc: SlateNode[], n: mdast.Content) => {
+          acc.push(...buildSlateNode(n, { ...deco, [type]: true }, overrides));
+          return acc;
+        },
+        []
+      );
     }
     case 'inlineCode': {
       const { type, value } = node;

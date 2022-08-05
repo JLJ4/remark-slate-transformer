@@ -11,6 +11,9 @@ type TextOrDecoration =
   | mdast.Emphasis
   | mdast.Strong
   | mdast.Delete
+  | mdast.Underline
+  | mdast.Subscript
+  | mdast.Superscript
   | mdast.InlineCode;
 
 export type OverridedSlateBuilders = { [key: string]: SlateBuilder };
@@ -71,18 +74,26 @@ const convertNodes = (
         const prev = textQueue[j - 1];
         const next = textQueue[j + 1];
         ends = [];
-        (['inlineCode', 'emphasis', 'strong', 'delete'] as const).forEach(
-          (k) => {
-            if (cur[k]) {
-              if (!prev || !prev[k]) {
-                starts.push(k);
-              }
-              if (!next || !next[k]) {
-                ends.push(k);
-              }
+        (
+          [
+            'inlineCode',
+            'emphasis',
+            'strong',
+            'delete',
+            'underline',
+            'subscript',
+            'superscript'
+          ] as const
+        ).forEach((k) => {
+          if (cur[k]) {
+            if (!prev || !prev[k]) {
+              starts.push(k);
+            }
+            if (!next || !next[k]) {
+              ends.push(k);
             }
           }
-        );
+        });
 
         const endsToRemove = starts.reduce<
           { key: DecorationType; index: number }[]
@@ -130,8 +141,12 @@ const convertNodes = (
               case 'strong':
               case 'emphasis':
               case 'delete':
+              case 'underline':
+              case 'subscript':
+              case 'superscript':
                 res = {
                   type: k,
+                  // @ts-expect-error: types not directly fitting
                   children: [res]
                 };
                 break;
@@ -264,10 +279,11 @@ const mergeTexts = (nodes: TextOrDecoration[]): TextOrDecoration[] => {
         // type-coverage:ignore-next-line
         last.value += (cur as typeof last).value;
       } else {
-        // type-coverage:ignore-next-line
+        // @ts-expect-error: types not directly fitting
         last.children = mergeTexts(
           // type-coverage:ignore-next-line
           last.children.concat(
+            // @ts-expect-error: types not directly fitting
             // type-coverage:ignore-next-line
             (cur as typeof last).children
             // type-coverage:ignore-next-line

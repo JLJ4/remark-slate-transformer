@@ -1,40 +1,40 @@
 // ref: https://github.com/syntax-tree/mdast
 
 import type {
-  Parent,
-  Literal,
-  Root,
-  Paragraph,
-  Heading,
-  ThematicBreak,
+  Alternative,
+  Association,
   Blockquote,
+  Break,
+  Code,
+  Definition,
+  Delete,
+  Emphasis,
+  Footnote,
+  FootnoteDefinition,
+  FootnoteReference,
+  Heading,
+  HTML,
+  Image,
+  ImageReference,
+  InlineCode,
+  Link,
+  LinkReference,
   List,
   ListItem,
-  Table,
-  TableRow,
-  TableCell,
-  HTML,
-  Code,
-  YAML,
-  Definition,
-  FootnoteDefinition,
-  Text,
-  Emphasis,
-  Strong,
-  Delete,
-  InlineCode,
-  Break,
-  Link,
-  Image,
-  LinkReference,
-  ImageReference,
-  Footnote,
-  FootnoteReference,
-  Resource,
-  Association,
+  Literal,
+  Paragraph,
+  Parent,
   Reference,
-  Alternative,
-} from "mdast";
+  Resource,
+  Root,
+  Strong,
+  Table,
+  TableCell,
+  TableRow,
+  Text,
+  ThematicBreak,
+  YAML
+} from 'mdast';
 export type {
   Parent,
   Literal,
@@ -68,19 +68,31 @@ export type {
   Resource,
   Association,
   Reference,
-  Alternative,
+  Alternative
 };
 
 export interface TOML extends Literal {
-  type: "toml";
+  type: 'toml';
 }
 
 export interface Math extends Literal {
-  type: "math";
+  type: 'math';
 }
 
 export interface InlineMath extends Literal {
-  type: "inlineMath";
+  type: 'inlineMath';
+}
+
+export interface Underline extends Parent {
+  type: 'underline';
+}
+
+export interface Subscript extends Parent {
+  type: 'subscript';
+}
+
+export interface Superscript extends Parent {
+  type: 'superscript';
 }
 
 export type Content =
@@ -123,6 +135,9 @@ export type StaticPhrasingContent =
   | Emphasis
   | Strong
   | Delete
+  | Underline
+  | Subscript
+  | Superscript
   | HTML
   | InlineCode
   | Break
