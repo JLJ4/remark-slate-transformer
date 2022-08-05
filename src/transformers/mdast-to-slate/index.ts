@@ -1,5 +1,5 @@
-import type * as slate from "../../models/slate";
 import type * as mdast from "../../models/mdast";
+import type * as slate from "../../models/slate";
 import { unreachable } from "../../utils";
 
 export type Decoration = Readonly<
@@ -36,7 +36,7 @@ const buildSlateRoot = (
   root: mdast.Root,
   overrides: OverridedMdastBuilders
 ): slate.Node[] => {
-  return convertNodes(root.children, {}, overrides);
+  return convertNodes(root.children as mdast.Content[], {}, overrides);
 };
 
 const convertNodes = (
@@ -104,7 +104,13 @@ const buildSlateNode = (
     case "delete": {
       const { type, children } = node;
       return children.reduce<SlateNode[]>((acc, n) => {
-        acc.push(...buildSlateNode(n, { ...deco, [type]: true }, overrides));
+        acc.push(
+          ...buildSlateNode(
+            n as mdast.Content,
+            { ...deco, [type]: true },
+            overrides
+          )
+        );
         return acc;
       }, []);
     }
@@ -146,7 +152,7 @@ const buildParagraph = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
   };
 };
 
@@ -160,7 +166,7 @@ const buildHeading = (
   return {
     type,
     depth,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
   };
 };
 
@@ -182,7 +188,7 @@ const buildBlockquote = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
   };
 };
 
@@ -211,7 +217,7 @@ const buildListItem = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
     checked,
     spread,
   };
@@ -253,7 +259,7 @@ const buildTableCell = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
   };
 };
 
@@ -341,7 +347,7 @@ const buildFootnoteDefinition = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
     identifier,
     label,
   };
@@ -374,7 +380,7 @@ const buildLink = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
     url,
     title,
   };
@@ -401,7 +407,7 @@ const buildLinkReference = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
     referenceType,
     identifier,
     label,
@@ -436,7 +442,7 @@ const buildFootnote = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides),
   };
 };
 
