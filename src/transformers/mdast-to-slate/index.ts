@@ -19,6 +19,7 @@ export type MdastBuilder<T extends string> = (
   node: T extends mdast.Content['type']
     ? Extract<mdast.Content, { type: T }>
     : unknown,
+  // type-coverage:ignore-next-line
   next: (children: any[]) => any
 ) => object | undefined;
 
@@ -33,6 +34,7 @@ const buildSlateRoot = (
   root: mdast.Root,
   overrides: OverridedMdastBuilders
 ): slate.Node[] => {
+  // type-coverage:ignore-next-line
   return convertNodes(root.children as mdast.Content[], {}, overrides);
 };
 
@@ -56,10 +58,12 @@ const buildSlateNode = (
   deco: Decoration,
   overrides: OverridedMdastBuilders
 ): SlateNode[] => {
+  // type-coverage:ignore-next-line
   const customNode = overrides[node.type]?.(node as any, (children) =>
     convertNodes(children, deco, overrides)
   );
   if (customNode != null) {
+    // type-coverage:ignore-next-line
     return [customNode as SlateNode];
   }
 
@@ -100,9 +104,11 @@ const buildSlateNode = (
     case 'strong':
     case 'delete': {
       const { type, children } = node;
+      // type-coverage:ignore-next-line
       return children.reduce<SlateNode[]>((acc, n) => {
         acc.push(
           ...buildSlateNode(
+            // type-coverage:ignore-next-line
             n as mdast.Content,
             { ...deco, [type]: true },
             overrides
@@ -149,6 +155,7 @@ const buildParagraph = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
@@ -163,6 +170,7 @@ const buildHeading = (
   return {
     type,
     depth,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
@@ -185,6 +193,7 @@ const buildBlockquote = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
@@ -214,6 +223,7 @@ const buildListItem = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides),
     checked,
     spread
@@ -256,6 +266,7 @@ const buildTableCell = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
@@ -344,6 +355,7 @@ const buildFootnoteDefinition = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides),
     identifier,
     label
@@ -377,6 +389,7 @@ const buildLink = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides),
     url,
     title
@@ -404,6 +417,7 @@ const buildLinkReference = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides),
     referenceType,
     identifier,
@@ -439,6 +453,7 @@ const buildFootnote = (
 ) => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };

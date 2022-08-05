@@ -17,6 +17,7 @@ export type OverridedSlateBuilders = { [key: string]: SlateBuilder };
 
 export type SlateBuilder = (
   node: unknown,
+  // type-coverage:ignore-next-line
   next: (children: any[]) => any
 ) => object | undefined;
 
@@ -33,9 +34,12 @@ const buildMdastRoot = (
 ): mdast.Root => {
   return <mdast.Root>{
     type: 'root',
+    // type-coverage:ignore-next-line
     children: convertNodes(
+      // type-coverage:ignore-next-line
       (node as any).children,
       overrides
+      // type-coverage:ignore-next-line
     ) as mdast.Root['children']
   };
 };
@@ -47,6 +51,7 @@ const convertNodes = (
   const mdastNodes: unistLib.Node[] = [];
   let textQueue: slateInternal.Text[] = [];
   for (let i = 0; i <= nodes.length; i++) {
+    // type-coverage:ignore-next-line
     const n = nodes[i] as slateInternal.SlateNode;
     if (n && isText(n)) {
       textQueue.push(n);
@@ -56,6 +61,7 @@ const convertNodes = (
       let ends: DecorationType[] = [];
       let textTemp: string = '';
       for (let j = 0; j < textQueue.length; j++) {
+        // type-coverage:ignore-next-line
         const cur = textQueue[j]!;
         textTemp += cur.text;
 
@@ -117,6 +123,7 @@ const convertNodes = (
               case 'inlineCode':
                 res = {
                   type: k,
+                  // type-coverage:ignore-next-line
                   value: (res as any).value
                 };
                 break;
@@ -158,6 +165,7 @@ const convertNodes = (
         textTemp = '';
       }
 
+      // type-coverage:ignore-next-line
       mdastNodes.push(...(mergeTexts(mdastTexts) as any as unistLib.Node[]));
       textQueue = [];
       if (!n) continue;
@@ -175,10 +183,12 @@ const buildMdastNode = (
   node: Exclude<slateInternal.SlateNode, slateInternal.Text>,
   overrides: OverridedSlateBuilders
 ): Exclude<mdast.Content, TextOrDecoration> | null => {
+  // type-coverage:ignore-next-line
   const customNode = overrides[node.type]?.(node as any, (children) =>
     convertNodes(children, overrides)
   );
   if (customNode != null) {
+    // type-coverage:ignore-next-line
     return customNode as any;
   }
 
@@ -248,13 +258,19 @@ const mergeTexts = (nodes: TextOrDecoration[]): TextOrDecoration[] => {
     const last = res[res.length - 1];
     if (last && last.type === cur.type) {
       if (last.type === 'text') {
+        // type-coverage:ignore-next-line
         last.value += (cur as typeof last).value;
       } else if (last.type === 'inlineCode') {
+        // type-coverage:ignore-next-line
         last.value += (cur as typeof last).value;
       } else {
+        // type-coverage:ignore-next-line
         last.children = mergeTexts(
+          // type-coverage:ignore-next-line
           last.children.concat(
+            // type-coverage:ignore-next-line
             (cur as typeof last).children
+            // type-coverage:ignore-next-line
           ) as TextOrDecoration[]
         );
       }
@@ -272,6 +288,7 @@ const buildParagraph = (
 ): mdast.Paragraph => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Paragraph['children']
   };
 };
@@ -283,6 +300,7 @@ const buildHeading = (
   return {
     type,
     depth,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Heading['children']
   };
 };
@@ -301,6 +319,7 @@ const buildBlockquote = (
 ): mdast.Blockquote => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Blockquote['children']
   };
 };
@@ -314,6 +333,7 @@ const buildList = (
     ordered,
     start,
     spread,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.List['children']
   };
 };
@@ -326,6 +346,7 @@ const buildListItem = (
     type,
     checked,
     spread,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.ListItem['children']
   };
 };
@@ -337,6 +358,7 @@ const buildTable = (
   return {
     type,
     align,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Table['children']
   };
 };
@@ -347,6 +369,7 @@ const buildTableRow = (
 ): mdast.TableRow => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.TableRow['children']
   };
 };
@@ -357,6 +380,7 @@ const buildTableCell = (
 ): mdast.TableCell => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.TableCell['children']
   };
 };
@@ -364,6 +388,7 @@ const buildTableCell = (
 const buildHtml = ({ type, children }: slateInternal.Html): mdast.HTML => {
   return {
     type,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
@@ -378,6 +403,7 @@ const buildCode = ({
     type,
     lang,
     meta,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
@@ -385,6 +411,7 @@ const buildCode = ({
 const buildYaml = ({ type, children }: slateInternal.Yaml): mdast.YAML => {
   return {
     type,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
@@ -392,6 +419,7 @@ const buildYaml = ({ type, children }: slateInternal.Yaml): mdast.YAML => {
 const buildToml = ({ type, children }: slateInternal.Toml): mdast.TOML => {
   return {
     type,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
@@ -420,9 +448,11 @@ const buildFootnoteDefinition = (
     type,
     identifier,
     label,
+    // type-coverage:ignore-next-line
     children: convertNodes(
       children,
       overrides
+      // type-coverage:ignore-next-line
     ) as mdast.FootnoteDefinition['children']
   };
 };
@@ -441,6 +471,7 @@ const buildLink = (
     type,
     url,
     title,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Link['children']
   };
 };
@@ -474,9 +505,11 @@ const buildLinkReference = (
     identifier,
     label,
     referenceType,
+    // type-coverage:ignore-next-line
     children: convertNodes(
       children,
       overrides
+      // type-coverage:ignore-next-line
     ) as mdast.LinkReference['children']
   };
 };
@@ -503,6 +536,7 @@ const buildFootnote = (
 ): mdast.Footnote => {
   return {
     type,
+    // type-coverage:ignore-next-line
     children: convertNodes(children, overrides) as mdast.Footnote['children']
   };
 };
@@ -522,6 +556,7 @@ const creatFootnoteReference = ({
 const buildMath = ({ type, children }: slateInternal.Math): mdast.Math => {
   return {
     type,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
@@ -532,6 +567,7 @@ const buildInlineMath = ({
 }: slateInternal.InlineMath): mdast.InlineMath => {
   return {
     type,
+    // type-coverage:ignore-next-line
     value: children[0]!.text
   };
 };
