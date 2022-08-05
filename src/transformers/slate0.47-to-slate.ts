@@ -1,5 +1,5 @@
-import type { BlockJSON, InlineJSON, TextJSON } from "slate_legacy";
-import type * as slate from "../models/slate";
+import type { BlockJSON, InlineJSON, TextJSON } from 'slate_legacy';
+import type * as slate from '../models/slate.js';
 
 export const slate047ToSlate = (
   nodes: (BlockJSON | InlineJSON | TextJSON)[]
@@ -23,30 +23,30 @@ const convert = (
   node: BlockJSON | InlineJSON | TextJSON
 ): slate.Node | null => {
   switch (node.object) {
-    case "block": {
+    case 'block': {
       const { type, nodes, data } = node;
       return {
         type,
         children: convertNodes(nodes as BlockJSON[]),
-        ...data,
+        ...data
       };
     }
-    case "inline": {
+    case 'inline': {
       const { type, nodes, data } = node;
       return {
         type,
         children: convertNodes(nodes as InlineJSON[]),
-        ...data,
+        ...data
       };
     }
-    case "text": {
-      const { text = "", marks } = node;
+    case 'text': {
+      const { text = '', marks } = node;
       return {
         text,
         ...marks?.reduce((acc, m) => {
           acc[m.type] = true;
           return acc;
-        }, {} as { [key: string]: true }),
+        }, {} as { [key: string]: true })
       };
     }
     default:

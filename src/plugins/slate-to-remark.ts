@@ -1,17 +1,17 @@
-import type { Plugin } from "unified";
-import type * as mdast from "../models/mdast";
-import type * as slate from "../models/slate";
+import type { Plugin } from 'unified';
+import type * as mdast from '../models/mdast.js';
+import type * as slate from '../models/slate.js';
 import {
-  slateToMdast,
   OverridedSlateBuilders,
-} from "../transformers/slate-to-mdast";
+  slateToMdast
+} from '../transformers/slate-to-mdast/index.js';
 
 export type Options = {
   overrides?: OverridedSlateBuilders;
 };
 
 const plugin: Plugin<[Options?], slate.Node, mdast.Root> = ({
-  overrides = {},
+  overrides = {}
 } = {}) => {
   return function (node) {
     return slateToMdast(node, overrides);

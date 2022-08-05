@@ -1,25 +1,22 @@
-import type * as mdast from "../../models/mdast";
-import type * as slate from "../../models/slate";
-import { unreachable } from "../../utils";
+import type * as mdast from '../../models/mdast.js';
+import type * as slate from '../../models/slate.js';
+import { unreachable } from '../../utils.js';
 
-export type Decoration = Readonly<
-  {
-    [key in (
-      | mdast.Emphasis
-      | mdast.Strong
-      | mdast.Delete
-      | mdast.InlineCode
-    )["type"]]?: true;
-  }
->;
+export type Decoration = Readonly<{
+  [key in (
+    | mdast.Emphasis
+    | mdast.Strong
+    | mdast.Delete
+    | mdast.InlineCode
+  )['type']]?: true;
+}>;
 
 export type OverridedMdastBuilders = {
-  [key in mdast.Content["type"]]?: MdastBuilder<key>;
-} &
-  ({ [key: string]: MdastBuilder<typeof key> } | {});
+  [key in mdast.Content['type']]?: MdastBuilder<key>;
+} & ({ [key: string]: MdastBuilder<typeof key> } | {});
 
 export type MdastBuilder<T extends string> = (
-  node: T extends mdast.Content["type"]
+  node: T extends mdast.Content['type']
     ? Extract<mdast.Content, { type: T }>
     : unknown,
   next: (children: any[]) => any
@@ -45,7 +42,7 @@ const convertNodes = (
   overrides: OverridedMdastBuilders
 ): slate.Node[] => {
   if (nodes.length === 0) {
-    return [{ text: "" }];
+    return [{ text: '' }];
   }
 
   return nodes.reduce<slate.Node[]>((acc, node) => {
@@ -67,41 +64,41 @@ const buildSlateNode = (
   }
 
   switch (node.type) {
-    case "paragraph":
+    case 'paragraph':
       return [buildParagraph(node, deco, overrides)];
-    case "heading":
+    case 'heading':
       return [buildHeading(node, deco, overrides)];
-    case "thematicBreak":
+    case 'thematicBreak':
       return [buildThematicBreak(node)];
-    case "blockquote":
+    case 'blockquote':
       return [buildBlockquote(node, deco, overrides)];
-    case "list":
+    case 'list':
       return [buildList(node, deco, overrides)];
-    case "listItem":
+    case 'listItem':
       return [buildListItem(node, deco, overrides)];
-    case "table":
+    case 'table':
       return [buildTable(node, deco, overrides)];
-    case "tableRow":
+    case 'tableRow':
       return [buildTableRow(node, deco, overrides)];
-    case "tableCell":
+    case 'tableCell':
       return [buildTableCell(node, deco, overrides)];
-    case "html":
+    case 'html':
       return [buildHtml(node)];
-    case "code":
+    case 'code':
       return [buildCode(node)];
-    case "yaml":
+    case 'yaml':
       return [buildYaml(node)];
-    case "toml":
+    case 'toml':
       return [buildToml(node)];
-    case "definition":
+    case 'definition':
       return [buildDefinition(node)];
-    case "footnoteDefinition":
+    case 'footnoteDefinition':
       return [buildFootnoteDefinition(node, deco, overrides)];
-    case "text":
+    case 'text':
       return [buildText(node.value, deco)];
-    case "emphasis":
-    case "strong":
-    case "delete": {
+    case 'emphasis':
+    case 'strong':
+    case 'delete': {
       const { type, children } = node;
       return children.reduce<SlateNode[]>((acc, n) => {
         acc.push(
@@ -114,27 +111,27 @@ const buildSlateNode = (
         return acc;
       }, []);
     }
-    case "inlineCode": {
+    case 'inlineCode': {
       const { type, value } = node;
       return [buildText(value, { ...deco, [type]: true })];
     }
-    case "break":
+    case 'break':
       return [buildBreak(node)];
-    case "link":
+    case 'link':
       return [buildLink(node, deco, overrides)];
-    case "image":
+    case 'image':
       return [buildImage(node)];
-    case "linkReference":
+    case 'linkReference':
       return [buildLinkReference(node, deco, overrides)];
-    case "imageReference":
+    case 'imageReference':
       return [buildImageReference(node)];
-    case "footnote":
+    case 'footnote':
       return [buildFootnote(node, deco, overrides)];
-    case "footnoteReference":
+    case 'footnoteReference':
       return [buildFootnoteReference(node)];
-    case "math":
+    case 'math':
       return [buildMath(node)];
-    case "inlineMath":
+    case 'inlineMath':
       return [buildInlineMath(node)];
     default:
       unreachable(node);
@@ -152,7 +149,7 @@ const buildParagraph = (
 ) => {
   return {
     type,
-    children: convertNodes(children as mdast.Content[], deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
 
@@ -166,7 +163,7 @@ const buildHeading = (
   return {
     type,
     depth,
-    children: convertNodes(children as mdast.Content[], deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
 
@@ -175,7 +172,7 @@ export type ThematicBreak = ReturnType<typeof buildThematicBreak>;
 const buildThematicBreak = ({ type }: mdast.ThematicBreak) => {
   return {
     type,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 
@@ -188,7 +185,7 @@ const buildBlockquote = (
 ) => {
   return {
     type,
-    children: convertNodes(children as mdast.Content[], deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
 
@@ -204,7 +201,7 @@ const buildList = (
     children: convertNodes(children, deco, overrides),
     ordered,
     start,
-    spread,
+    spread
   };
 };
 
@@ -219,7 +216,7 @@ const buildListItem = (
     type,
     children: convertNodes(children as mdast.Content[], deco, overrides),
     checked,
-    spread,
+    spread
   };
 };
 
@@ -233,7 +230,7 @@ const buildTable = (
   return {
     type,
     children: convertNodes(children, deco, overrides),
-    align,
+    align
   };
 };
 
@@ -246,7 +243,7 @@ const buildTableRow = (
 ) => {
   return {
     type,
-    children: convertNodes(children, deco, overrides),
+    children: convertNodes(children, deco, overrides)
   };
 };
 
@@ -259,7 +256,7 @@ const buildTableCell = (
 ) => {
   return {
     type,
-    children: convertNodes(children as mdast.Content[], deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
 
@@ -268,7 +265,7 @@ export type Html = ReturnType<typeof buildHtml>;
 const buildHtml = ({ type, value }: mdast.HTML) => {
   return {
     type,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -279,7 +276,7 @@ const buildCode = ({ type, value, lang, meta }: mdast.Code) => {
     type,
     lang,
     meta,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -288,7 +285,7 @@ export type Yaml = ReturnType<typeof buildYaml>;
 const buildYaml = ({ type, value }: mdast.YAML) => {
   return {
     type,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -297,7 +294,7 @@ export type Toml = ReturnType<typeof buildToml>;
 const buildToml = ({ type, value }: mdast.TOML) => {
   return {
     type,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -306,7 +303,7 @@ export type Math = ReturnType<typeof buildMath>;
 const buildMath = ({ type, value }: mdast.Math) => {
   return {
     type,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -315,7 +312,7 @@ export type InlineMath = ReturnType<typeof buildInlineMath>;
 const buildInlineMath = ({ type, value }: mdast.InlineMath) => {
   return {
     type,
-    children: [{ text: value }],
+    children: [{ text: value }]
   };
 };
 
@@ -326,7 +323,7 @@ const buildDefinition = ({
   identifier,
   label,
   url,
-  title,
+  title
 }: mdast.Definition) => {
   return {
     type,
@@ -334,7 +331,7 @@ const buildDefinition = ({
     label,
     url,
     title,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 
@@ -349,7 +346,7 @@ const buildFootnoteDefinition = (
     type,
     children: convertNodes(children as mdast.Content[], deco, overrides),
     identifier,
-    label,
+    label
   };
 };
 
@@ -358,7 +355,7 @@ export type Text = ReturnType<typeof buildText>;
 const buildText = (text: string, deco: Decoration) => {
   return {
     ...deco,
-    text,
+    text
   };
 };
 
@@ -367,7 +364,7 @@ export type Break = ReturnType<typeof buildBreak>;
 const buildBreak = ({ type }: mdast.Break) => {
   return {
     type,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 
@@ -382,7 +379,7 @@ const buildLink = (
     type,
     children: convertNodes(children as mdast.Content[], deco, overrides),
     url,
-    title,
+    title
   };
 };
 
@@ -394,7 +391,7 @@ const buildImage = ({ type, url, title, alt }: mdast.Image) => {
     url,
     title,
     alt,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 
@@ -410,7 +407,7 @@ const buildLinkReference = (
     children: convertNodes(children as mdast.Content[], deco, overrides),
     referenceType,
     identifier,
-    label,
+    label
   };
 };
 
@@ -421,7 +418,7 @@ const buildImageReference = ({
   alt,
   referenceType,
   identifier,
-  label,
+  label
 }: mdast.ImageReference) => {
   return {
     type,
@@ -429,7 +426,7 @@ const buildImageReference = ({
     referenceType,
     identifier,
     label,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 
@@ -442,7 +439,7 @@ const buildFootnote = (
 ) => {
   return {
     type,
-    children: convertNodes(children as mdast.Content[], deco, overrides),
+    children: convertNodes(children as mdast.Content[], deco, overrides)
   };
 };
 
@@ -451,13 +448,13 @@ export type FootnoteReference = ReturnType<typeof buildFootnoteReference>;
 const buildFootnoteReference = ({
   type,
   identifier,
-  label,
+  label
 }: mdast.FootnoteReference) => {
   return {
     type,
     identifier,
     label,
-    children: [{ text: "" }],
+    children: [{ text: '' }]
   };
 };
 

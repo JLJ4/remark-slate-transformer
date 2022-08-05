@@ -1,6 +1,9 @@
-import type { Plugin } from "unified";
-import { mdastToSlate, SlateNode } from "../transformers/mdast-to-slate";
-import { slateToSlate047 } from "../transformers/slate-to-slate0.47";
+import type { Plugin } from 'unified';
+import {
+  mdastToSlate,
+  SlateNode
+} from '../transformers/mdast-to-slate/index.js';
+import { slateToSlate047 } from '../transformers/slate-to-slate0.47.js';
 
 const plugin: Plugin<[]> = function () {
   this.Compiler = function (node) {
